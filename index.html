@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<title>IdeoTree</title>
+
+		<meta charset="UTF-8">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+		<!--<link rel="apple-touch-icon" sizes="76x76" href="layout/favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="layout/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="layout/favicon/favicon-16x16.png">
+		<link rel="manifest" href="layout/favicon/manifest.json">
+		<link rel="mask-icon" href="layout/favicon/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="theme-color" content="#ffffff">-->
+
+		<script src="scripts/libs/jquery.js"></script>
+		<script src="scripts/libs/angular.js"></script>
+		<script src="scripts/main.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="layout/styles/global.css" />
+
+	</head>
+
+	<body>
+
+		<div class="content-limiter">
+
+			<div class="content-marginer" ng-app="IdeoTree" ng-controller="Home">
+
+				<div class="logotype">IdeoTree</div>
+
+				<button class="global-btn" ng-click="expandAll()">Expand all</button><button class="global-btn" ng-click="collapseAll()">Collapse all</button><button class="global-btn" ng-click="admin()" ng-hide="isAdmin()">Admin</button>
+				<span ng-hide="!loading">Loading...</span>{{error}}
+				<ul class="dirList">
+					<directory ng-repeat="obj in tree" dir-obj="obj" dir-sub="subDirectory(object)" dir-priv="isAdmin()" dir-add="addDirectory(object)" dir-remove="removeDirectory(parent, id)" dir-edit-start="editStart(object, event)" dir-edit-save="editSave(object)" dir-sort="sortDirectory(object)"></directory>
+				</ul>
+
+			</div>
+
+		</div>
+
+	</body>
+
+</html>
