@@ -256,7 +256,7 @@ App.controller('Home', function($scope, $http, API, UserService, CSRF, Configura
 		});
 	};
 
-	$scope.subDirectory = function(obj, sort, reset) {
+	$scope.subDirectory = function(obj, reset) {
 
 		if (reset) {
 			obj.childs = [];
@@ -269,7 +269,7 @@ App.controller('Home', function($scope, $http, API, UserService, CSRF, Configura
 
 			$scope.loading = true;
 
-			$http.get(Configuration.getConfig('baseUrl') + 'subdir/' + obj.id + '/' + obj.sort
+			$http.get(Configuration.getConfig('baseUrl') + 'subdir/' + obj.id
 
 			).then(function Success(response) {
 
@@ -316,7 +316,7 @@ App.controller('Home', function($scope, $http, API, UserService, CSRF, Configura
 
 		   if (ParsedAPI.status) {
 				obj.hasChilds = true;
-				$scope.subDirectory(obj, obj.sort, true);
+				$scope.subDirectory(obj, true);
 		   }
 
 	   }, function Error(response) {
@@ -400,10 +400,8 @@ App.controller('Home', function($scope, $http, API, UserService, CSRF, Configura
 	};
 
 	$scope.sortDirectory = function(object) {
-
 		object.sort = !object.sort;
-		$scope.subDirectory(object, object.sort, true);
-
+		object.childs.sort((a, b) => (a.name > b.name) ? (object.sort ? -1 : 1)  : (object.sort ? 1 : -1));
 	};
 
 });
@@ -422,20 +420,21 @@ App.controller('Home', function($scope, $http, API, UserService, CSRF, Configura
 			 editSave: '&dirEditSave',
 			 sort: '&dirSort'
 		 },
-		 template:
-		 '<li ng-hide="obj.removed">' +
-		 '<button ng-click="sub({object: obj})" ng-class="{expanded: obj.childVisible}" ng-hide="!obj.hasChilds" class="dirBtn"></button>' +
-		 '<div class="dirName" ng-dblclick="editStart({object: obj, event: $event})">' +
-		 	'<input type="text" class="nameInput" ng-model="obj.name" ng-keypress="$event.keyCode == 13 && editSave({object: obj})" ng-disabled="!obj.edit" ng-blur="obj.edit && editSave({object: obj})">' +
-		 '</div>' +
-		 '<div class="options" ng-hide="!admin">' +
-		 	'<button ng-click="sort({object: obj})" ng-hide="!obj.hasChilds || !obj.childVisible" class="dirSort">^</button>' +
-			'<button ng-click="add({object: obj})" class="dirAdd"></button>' +
-			'<button ng-click="remove({parent: parent, id: obj.id})" class="dirRemove" ng-hide="obj.flags.indexOf(\'root\')!==-1"></button>' +
-		 '</div>' +
-		 '</li>' +
-		 '<ul ng-hide="!obj.childVisible">' + //Childs creator
-		 	'<directory ng-repeat="newObj in obj.childs" dir-obj="newObj" dir-parent="obj" dir-sub="sub({object})" dir-priv="admin" dir-add="add({ object})" dir-remove="remove({parent, id})" dir-edit-start="editStart({object, event})" dir-edit-save="editSave({object})"  dir-sort="sortDirectory({object})"></directory>' +
-		 '</ul>'
+		 template: `
+			<li ng-hide="obj.removed">
+				 <button ng-click="sub({object: obj})" ng-class="{expanded: obj.childVisible}" ng-hide="!obj.hasChilds" class="dirBtn"></button>
+				 <div class="dirName" ng-dblclick="editStart({object: obj, event: $event})">
+					<input type="text" class="nameInput" ng-model="obj.name" ng-keypress="$event.keyCode == 13 && editSave({object: obj})" ng-disabled="!obj.edit" ng-blur="obj.edit && editSave({object: obj})">
+				 </div>
+				 <div class="options" ng-hide="!admin">
+					<button ng-click="sort({object: obj})" ng-hide="!obj.hasChilds || !obj.childVisible" class="dirSort" ng-class="obj.sort ? 'sortDown' : 'sortUp'"></button>
+					<button ng-click="add({object: obj})" class="dirAdd"></button>
+					<button ng-click="remove({parent: parent, id: obj.id})" class="dirRemove" ng-hide="obj.flags.indexOf(\'root\')!==-1"></button>
+				 </div>
+			 </li>
+			 <ul ng-hide="!obj.childVisible">
+				<directory ng-repeat="newObj in obj.childs" dir-obj="newObj" dir-parent="obj" dir-sub="sub({object})" dir-priv="admin" dir-add="add({ object})" dir-remove="remove({parent, id})" dir-edit-start="editStart({object, event})" dir-edit-save="editSave({object})"  dir-sort="sort({object})"></directory>
+			 </ul>
+		`
 	 }
  });
