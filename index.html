@@ -35,7 +35,7 @@
 				<button class="global-btn" ng-click="expandAll()">Expand all</button><button class="global-btn" ng-click="collapseAll()">Collapse all</button><button class="global-btn" ng-click="admin()" ng-hide="isAdmin()">Admin</button>
 				<span ng-hide="!loading">Loading...</span>{{error}}
 				<ul class="dirList">
-					<directory ng-repeat="obj in tree" dir-obj="obj" dir-sub="subDirectory(object)" dir-priv="isAdmin()" dir-add="addDirectory(object)" dir-remove="removeDirectory(parent, id)" dir-edit-start="editStart(object, event)" dir-edit-save="editSave(object)" dir-sort="sortDirectory(object)"></directory>
+					<directory ng-repeat="obj in tree" dir-obj="obj" dir-sub="subDirectory(object)" dir-priv="isAdmin()" dir-add="addDirectory(object)" dir-remove="removeDirectory(parent, id)" dir-edit-start="editSave(object, event)" dir-edit-save="editSave(object)" dir-sort="sortDirectory(object)"></directory>
 				</ul>
 
 			</div>
