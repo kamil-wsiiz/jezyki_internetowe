@@ -9,7 +9,7 @@ $Rest = new Rest($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
 
 $Rest->addRoute('dir', 'GET', [], 'TreeController@Default', null);
 $Rest->addRoute('fullDir', 'GET', [], 'TreeController@allDir', null);
-$Rest->addRoute('subDir', 'GET', [['id', 'number', [], false], ['sort', 'string', ['bool'], false]], 'TreeController@childsByParent', null);
+$Rest->addRoute('subDir', 'GET', [['id', 'number', [], false]], 'TreeController@childsByParent', null);
 $Rest->addRoute('auth', 'POST', [['pass', 'string', [], false]], 'AuthController@Auth', null);
 $Rest->addRoute('dir', 'POST', [['parent_id', 'number', [], false]], 'TreeController@addDir', Rest::ONLY_ADMIN, true);
 $Rest->addRoute('dir', 'PUT', [['id', 'number', [], false], ['newName', 'pattern', 'name', false]], 'TreeController@editDir', Rest::ONLY_ADMIN, true);

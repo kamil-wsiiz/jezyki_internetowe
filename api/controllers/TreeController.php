@@ -98,7 +98,6 @@ class TreeController
 	 */
 	private function buildTree($data, $type)
 	{
-
 		$tree = [];
 
 		switch ($type) {
@@ -119,15 +118,16 @@ class TreeController
 					$model->name = $dir['name'];
 					$model->hasChilds = ($dir['childCount'] > 0);
 
-					$tree[$dir['parent_id']] = new Models\Dir;
-					$tree[$dir['parent_id']]->childs[$dir['id']] = $model;
+					if (!isset($tree[$dir['parent_id']]))
+					    $tree[$dir['parent_id']] = new Models\Dir;
+
+					$tree[$dir['parent_id']]->childs[] = $model;
 				}
 				break;
 
 		}
 
 		return $tree;
-
 	}
 
 	/**
@@ -164,17 +164,13 @@ class TreeController
 	 * @param $sort
 	 * Get and return childs of specific id with sort
 	 */
-	public function childsByParent($id, $sort)
+	public function childsByParent($id)
 	{
-
-		$sortDir = ($sort == 'true') ? 'DESC' : 'ASC';
-
-		$Query = $this->Db->prepare("SELECT act.id, act.name, act.parent_id, (SELECT COUNT(*) FROM ideotree.directories WHERE parent_id=act.id) AS childCount FROM ideotree.directories AS act WHERE parent_id=:id ORDER BY act.name ".$sortDir.";");
+		$Query = $this->Db->prepare("SELECT act.id, act.name, act.parent_id, (SELECT COUNT(*) FROM ideotree.directories WHERE parent_id=act.id) AS childCount FROM ideotree.directories AS act WHERE parent_id=:id;");
 		$Query->bindValue(':id', $id, PDO::PARAM_INT);
 		$Query->execute();
 
 		if (!$Data = $Query->fetchAll(PDO::FETCH_ASSOC)) {
-
 			$Query->closeCursor();
 			Api::Callback(Callback::API_STATUS_FAILED, [], 'Could not get dir data.');
 
@@ -184,7 +180,6 @@ class TreeController
 			Api::Callback(Callback::API_STATUS_OK, ['status' => true, 'tree' => $this->buildTree($Data, 'childs')]);
 
 		}
-
 	}
 
 	/**
